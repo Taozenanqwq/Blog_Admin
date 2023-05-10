@@ -1,5 +1,5 @@
 import axios from 'axios';
-export const request = (config) => {
+export const request = (config): any => {
   const http = axios.create({
     baseURL: '/api/v1',
   });
