@@ -7,6 +7,9 @@ const i18n = {
     'categories.operations': 'Operations',
     'categories.search.placeholder': 'please enter category name',
     'categories.addCategory': 'Add Category',
+    'categories.modal.placeholder': 'please enter category name',
+    'categories.modal.field': 'category',
+    'categories.editCategory': 'Edit Category',
   },
   'zh-CN': {
     'categories.name': '分类名称',
@@ -16,6 +19,9 @@ const i18n = {
     'categories.operations': '文章管理',
     'categories.search.placeholder': '请输入分类名称',
     'categories.addCategory': '添加分类',
+    'categories.modal.placeholder': '请输入分类名称',
+    'categories.modal.field': '类型',
+    'categories.editCategory': '修改分类',
   },
 };
 

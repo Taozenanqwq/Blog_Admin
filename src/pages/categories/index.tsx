@@ -4,20 +4,27 @@ import useLocale from '@/utils/useLocale';
 import locale from './locale';
 import './mock';
 import styles from './style/popular-contents.module.less';
-import { getCategories } from '@/api/categories';
+import { getCategories, delCategoriey } from '@/api/categories';
+import AddModal from './add-modal';
+import EditModal from './edit-modal';
 function PopularContent() {
+  // states
   const t = useLocale(locale);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
+  const [addVisible, setAddVisible] = useState(false);
+  const [editVisible, setEditVisible] = useState(false);
+  const [curEditId, setCurEditId] = useState();
 
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await getCategories(page);
-      setData(data.list);
-      setTotal(data.total);
+      const res = await getCategories(page);
+      setData(res.list);
+      setTotal(res.total);
     } catch (err) {
       console.log(err.message);
     } finally {
@@ -32,7 +39,7 @@ function PopularContent() {
   const columns = [
     {
       title: t['categories.name'],
-      dataIndex: 'categories',
+      dataIndex: 'category',
     },
     {
       title: t['categories.articleCount'],
@@ -49,12 +56,33 @@ function PopularContent() {
     {
       title: t['categories.operations'],
       dataIndex: 'operations',
-      render: () => {
+      render: (col, item, idx) => {
         return (
           <div>
             <Link>查看</Link>
-            <Link>编辑</Link>
-            <Link status="error">删除</Link>
+            <Link
+              onClick={async () => {
+                setCurEditId(item._id);
+                setEditVisible(true);
+              }}
+            >
+              编辑
+            </Link>
+            <Link
+              status="error"
+              onClick={async () => {
+                try {
+                  const { total } = await delCategoriey(item._id);
+                  if (total % pageSize == 0 && page == total / pageSize + 1)
+                    setPage((prePage) => prePage - 1);
+                  fetchData();
+                } catch (err) {
+                  console.log('删除失败，请重试！');
+                }
+              }}
+            >
+              删除
+            </Link>
           </div>
         );
       },
@@ -62,9 +90,27 @@ function PopularContent() {
   ];
   return (
     <Card>
+      {/* 添加模态框 */}
+      <AddModal
+        onCancel={() => setAddVisible(false)}
+        visible={addVisible}
+        onTotalChange={(total) => {
+          setTotal(total);
+        }}
+      ></AddModal>
+      {/* 修改模态框 */}
+      <EditModal
+        onCancel={() => setEditVisible(false)}
+        visible={editVisible}
+        id={curEditId}
+        onFetchData={() => fetchData()}
+      ></EditModal>
+
       <div className={styles['category_searchbar']}>
         <div>
-          <Button type="primary">{t['categories.addCategory']}</Button>
+          <Button type="primary" onClick={() => setAddVisible(true)}>
+            {t['categories.addCategory']}
+          </Button>
         </div>
         <div>
           <Input
@@ -85,7 +131,7 @@ function PopularContent() {
         onChange={(pagination) => {
           setPage(pagination.current);
         }}
-        pagination={{ total, current: page, pageSize: 10, simple: true }}
+        pagination={{ total, current: page, pageSize, simple: true }}
       />
     </Card>
   );
