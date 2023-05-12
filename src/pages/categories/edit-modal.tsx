@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Form, Input } from '@arco-design/web-react';
+import { Modal, Form, Input, Message } from '@arco-design/web-react';
 import useLocale from '@/utils/useLocale';
 import locale from './locale';
 import { editCategoriey } from '@/api/categories';
@@ -16,8 +16,9 @@ export default function EditModal(props: any) {
       const res = await editCategoriey(id, form.getFieldValue('category'));
       if (res.code != 0) throw new Error('修改文章类型出错，请重试');
       onFetchData();
+      Message.success('修改成功！');
     } catch (err) {
-      console.log(err.message);
+      Message.warning('修改失败，请重试！');
     } finally {
       setConfirmLoading(false);
       onCancel();

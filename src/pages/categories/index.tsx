@@ -1,5 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Card, Table, Link, Button, Input } from '@arco-design/web-react';
+import {
+  Card,
+  Table,
+  Link,
+  Button,
+  Input,
+  Message,
+  Popconfirm,
+} from '@arco-design/web-react';
 import useLocale from '@/utils/useLocale';
 import locale from './locale';
 import './mock';
@@ -68,21 +76,25 @@ function PopularContent() {
             >
               编辑
             </Link>
-            <Link
-              status="error"
-              onClick={async () => {
+
+            <Popconfirm
+              focusLock
+              title={t['categories.delete.pop.title']}
+              content={t['categories.delete.pop']}
+              onOk={async () => {
                 try {
                   const { total } = await delCategoriey(item._id);
                   if (total % pageSize == 0 && page == total / pageSize + 1)
                     setPage((prePage) => prePage - 1);
-                  fetchData();
+                  await fetchData();
+                  Message.success('删除成功！');
                 } catch (err) {
-                  console.log('删除失败，请重试！');
+                  Message.error('删除失败，请重试！');
                 }
               }}
             >
-              删除
-            </Link>
+              <Link status="error">删除</Link>
+            </Popconfirm>
           </div>
         );
       },

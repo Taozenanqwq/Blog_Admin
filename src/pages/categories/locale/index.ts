@@ -10,6 +10,8 @@ const i18n = {
     'categories.modal.placeholder': 'please enter category name',
     'categories.modal.field': 'category',
     'categories.editCategory': 'Edit Category',
+    'categories.delete.pop': 'Are you sure you want to delete?',
+    'categories.delete.pop.title': 'Confirm Delete?',
   },
   'zh-CN': {
     'categories.name': '分类名称',
@@ -22,6 +24,8 @@ const i18n = {
     'categories.modal.placeholder': '请输入分类名称',
     'categories.modal.field': '类型',
     'categories.editCategory': '修改分类',
+    'categories.delete.pop': '确认删除该分类？',
+    'categories.delete.pop.title': '确认删除？',
   },
 };
 

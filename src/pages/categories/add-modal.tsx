@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Form, Input } from '@arco-design/web-react';
+import { Modal, Form, Input, Message } from '@arco-design/web-react';
 import useLocale from '@/utils/useLocale';
 import locale from './locale';
 import { addCategoriey } from '@/api/categories';
@@ -17,8 +17,9 @@ export default function AddModal(props: any) {
       const res = await addCategoriey(form.getFieldValue('category'));
       if (res.code != 0) throw new Error('添加类型出错，请重试');
       onTotalChange(res.total);
+      Message.success('修改成功！');
     } catch (err) {
-      console.log(err.message);
+      Message.warning('添加失败，请重试！');
     } finally {
       setConfirmLoading(false);
       onCancel();
