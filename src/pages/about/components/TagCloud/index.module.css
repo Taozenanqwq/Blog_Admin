@@ -1,0 +1,10 @@
+.tag-cloud {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+}
+
+.add-tag:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-primary-light-3);
+}

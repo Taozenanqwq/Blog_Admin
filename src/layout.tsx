@@ -1,13 +1,20 @@
-import React, { useState, useRef, useMemo, useEffect } from 'react';
+import React, {
+  useState,
+  useRef,
+  useMemo,
+  useEffect,
+  createContext,
+} from 'react';
 import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
 import { Layout, Menu, Breadcrumb, Spin } from '@arco-design/web-react';
 import cs from 'classnames';
 import {
   IconDashboard,
-  IconTag,
+  IconInfoCircle,
   IconMenuFold,
   IconMenuUnfold,
   IconApps,
+  IconTag,
 } from '@arco-design/web-react/icon';
 import { useSelector } from 'react-redux';
 import qs from 'query-string';
@@ -35,6 +42,8 @@ function getIconFromKey(key) {
       return <IconTag className={styles.icon} />;
     case 'categories':
       return <IconApps className={styles.icon}></IconApps>;
+    case 'about':
+      return <IconInfoCircle className={styles.icon}></IconInfoCircle>;
     default:
       return <div className={styles['icon-empty']} />;
   }
@@ -98,7 +107,6 @@ function PageLayout() {
   const showFooter = settings.footer && urlParams.footer !== false;
 
   const flattenRoutes = useMemo(() => getFlattenRoutes(routes) || [], [routes]);
-
   function renderRoutes(locale) {
     routeMap.current.clear();
     return function travel(_routes: IRoute[], level, parentNode = []) {
@@ -229,46 +237,52 @@ function PageLayout() {
               </div>
             </Sider>
           )}
-          <Layout className={styles['layout-content']} style={paddingStyle}>
-            <div className={styles['layout-content-wrapper']}>
-              {!!breadcrumb.length && (
-                <div className={styles['layout-breadcrumb']}>
-                  <Breadcrumb>
-                    {breadcrumb.map((node, index) => (
-                      <Breadcrumb.Item key={index}>
-                        {typeof node === 'string' ? locale[node] || node : node}
-                      </Breadcrumb.Item>
-                    ))}
-                  </Breadcrumb>
-                </div>
-              )}
-              <Content>
-                <Switch>
-                  {flattenRoutes.map((route, index) => {
-                    return (
-                      <Route
-                        key={index}
-                        path={`/${route.key}`}
-                        component={route.component}
-                      />
-                    );
-                  })}
-                  <Route exact path="/">
-                    <Redirect to={`/${defaultRoute}`} />
-                  </Route>
-                  <Route
-                    path="*"
-                    component={lazyload(() => import('./pages/exception/403'))}
-                  />
-                </Switch>
-              </Content>
-            </div>
-            {showFooter && <Footer />}
-          </Layout>
+          <collapseContext.Provider value={collapsed}>
+            <Layout className={styles['layout-content']} style={paddingStyle}>
+              <div className={styles['layout-content-wrapper']}>
+                {!!breadcrumb.length && (
+                  <div className={styles['layout-breadcrumb']}>
+                    <Breadcrumb>
+                      {breadcrumb.map((node, index) => (
+                        <Breadcrumb.Item key={index}>
+                          {typeof node === 'string'
+                            ? locale[node] || node
+                            : node}
+                        </Breadcrumb.Item>
+                      ))}
+                    </Breadcrumb>
+                  </div>
+                )}
+                <Content>
+                  <Switch>
+                    {flattenRoutes.map((route, index) => {
+                      return (
+                        <Route
+                          key={index}
+                          path={`/${route.key}`}
+                          component={route.component}
+                        />
+                      );
+                    })}
+                    <Route exact path="/">
+                      <Redirect to={`/${defaultRoute}`} />
+                    </Route>
+                    <Route
+                      path="*"
+                      component={lazyload(
+                        () => import('./pages/exception/403')
+                      )}
+                    />
+                  </Switch>
+                </Content>
+              </div>
+              {showFooter && <Footer />}
+            </Layout>
+          </collapseContext.Provider>
         </Layout>
       )}
     </Layout>
   );
 }
-
+export const collapseContext = createContext(false);
 export default PageLayout;

@@ -79,7 +79,5 @@ setupMock({
           };
       }
     });
-
-    Mock.mock(new RegExp('/api/v1/blog-categories'));
   },
 });

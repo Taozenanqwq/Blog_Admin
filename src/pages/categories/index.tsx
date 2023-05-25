@@ -15,7 +15,7 @@ import styles from './style/popular-contents.module.less';
 import { getCategories, delCategoriey } from '@/api/categories';
 import AddModal from './add-modal';
 import EditModal from './edit-modal';
-function PopularContent() {
+function CategoryManagment() {
   // states
   const t = useLocale(locale);
   const [data, setData] = useState([]);
@@ -149,4 +149,4 @@ function PopularContent() {
   );
 }
 
-export default PopularContent;
+export default CategoryManagment;
